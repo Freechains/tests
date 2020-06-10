@@ -1,11 +1,11 @@
-import kotlinx.serialization.UnstableDefault
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import org.freechains.common.*
 import org.freechains.host.*
 import org.freechains.cli.*
-import org.freechains.bootstrap.Bootstrap
-import org.freechains.bootstrap.Store
+import org.freechains.bootstrap.*
+import org.freechains.bootstrap.Chain
+import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.MethodOrderer.Alphanumeric
@@ -70,7 +70,7 @@ class Tests_Bootstrap {
         main_cli_assert(arrayOf("peer", peer(2), "send", "#boot", host(0)))
 
         var ok = false
-        val boot = Bootstrap(PATH+"/x.json","#boot", peer(2))
+        val boot = Chain(PATH,"#boot", peer(2))
         boot.cbs.add {
             ok = it.peers.contains(peer(1)) && it.chains.contains(Pair("#chat",null))
         }
@@ -88,5 +88,10 @@ class Tests_Bootstrap {
             val pay = main_cli_assert(arrayOf("chain", "\$family", "get", "payload", it, host(2)))
             assert_(pay == "[\$family] Hello World!")
         }
+    }
+
+    @Test
+    fun t01 () {
+
     }
 }
