@@ -50,7 +50,10 @@ class Tests_Bootstrap {
         Thread.sleep(200)
 
         main_cli_assert(arrayOf("chains", "join", "#boot", host(0)))
+        main_cli_assert(arrayOf("chains", "join", "#chat", host(1)))
         main_cli_assert(arrayOf("chains", "join", "#boot", host(2)))
+
+        main_cli_assert(arrayOf("chain", "#chat", "post", "inline", "Hello World!", host(1)))
 
         // post to 8330 -- send to --> 8332
         val data = Store (
@@ -70,5 +73,9 @@ class Tests_Bootstrap {
 
         Thread.sleep(1000)
         assert(ok)
+        main_cli_assert(arrayOf("chain", "#chat", "heads", "all")).let {
+            val pay = main_cli_assert(arrayOf("chain", "#chat", "get", "payload", it))
+            assert_(pay == "Hello World!")
+        }
     }
 }
