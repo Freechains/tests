@@ -44,16 +44,20 @@ class Tests_Bootstrap {
 
     @Test
     fun t00 () {
-        thread { main_host(arrayOf("start", PATH+"/0", port(0))) }
-        thread { main_host(arrayOf("start", PATH+"/1", port(1))) }
-        thread { main_host(arrayOf("start", PATH+"/2", port(2))) }
+        thread { main_host(arrayOf("start", PATH+"/0", port(0))) }      // peer with bootstrap
+        thread { main_host(arrayOf("start", PATH+"/1", port(1))) }      // peer with all content
+        thread { main_host(arrayOf("start", PATH+"/2", port(2))) }      // myself
         Thread.sleep(200)
+
+        val key = main_cli_assert(arrayOf("crypto", "shared", "my-password", host(2)))
 
         main_cli_assert(arrayOf("chains", "join", "#boot", host(0)))
         main_cli_assert(arrayOf("chains", "join", "#chat", host(1)))
+        main_cli_assert(arrayOf("chains", "join", "\$family", key, host(1)))
         main_cli_assert(arrayOf("chains", "join", "#boot", host(2)))
 
-        main_cli_assert(arrayOf("chain", "#chat", "post", "inline", "Hello World!", host(1)))
+        main_cli_assert(arrayOf("chain", "#chat",    "post", "inline", "[#chat] Hello World!",    host(1)))
+        main_cli_assert(arrayOf("chain", "\$family", "post", "inline", "[\$family] Hello World!", host(1)))
 
         // post to 8330 -- send to --> 8332
         val data = Store (
@@ -62,20 +66,27 @@ class Tests_Bootstrap {
         )
         @OptIn(UnstableDefault::class)
         val json= Json(JsonConfiguration(prettyPrint=true)).stringify(Store.serializer(), data)
-        main_cli_assert(arrayOf("chain", "#boot", "post", "inline", json))
-        main_cli_assert(arrayOf("peer", peer(2), "send", "#boot"))
+        main_cli_assert(arrayOf("chain", "#boot", "post", "inline", json, host(0)))
+        main_cli_assert(arrayOf("peer", peer(2), "send", "#boot", host(0)))
 
         var ok = false
-        val boot = Bootstrap(PATH+"/x.json","#boot")
+        val boot = Bootstrap(PATH+"/x.json","#boot", peer(2))
         boot.cbs.add {
             ok = it.peers.contains(peer(1)) && it.chains.contains(Pair("#chat",null))
         }
 
         Thread.sleep(1000)
         assert(ok)
-        main_cli_assert(arrayOf("chain", "#chat", "heads", "all")).let {
-            val pay = main_cli_assert(arrayOf("chain", "#chat", "get", "payload", it))
-            assert_(pay == "Hello World!")
+        main_cli_assert(arrayOf("chain", "#chat", "heads", "all", host(2))).let {
+            val pay = main_cli_assert(arrayOf("chain", "#chat", "get", "payload", it, host(2)))
+            assert_(pay == "[#chat] Hello World!")
+        }
+
+        boot.write { it.chains.add(Pair("\$family", key)) }
+        Thread.sleep(1000)
+        main_cli_assert(arrayOf("chain", "\$family", "heads", "all", host(2))).let {
+            val pay = main_cli_assert(arrayOf("chain", "\$family", "get", "payload", it, host(2)))
+            assert_(pay == "[\$family] Hello World!")
         }
     }
 }
