@@ -16,12 +16,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
     implementation "com.goterl.lazycode:lazysodium-java:4.2.6"
     implementation "net.java.dev.jna:jna:5.5.0"
-    //implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '+'
-    //compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
-    //implementation 'org.slf4j:slf4j-log4j1:1.7.29'
     implementation 'org.slf4j:slf4j-nop:2.0.0-alpha1'
-    //compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.29'
-    //compile group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0-alpha1'
 
     testImplementation (
             'org.assertj:assertj-core:3.12.2',
