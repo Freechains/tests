@@ -1,0 +1,11 @@
+{
+    "peers": [
+        "localhost:8400","localhost:8401"
+    ],
+    "chains": [
+        {
+            "first": "#chat",
+            "second": null
+        }
+    ]
+}
