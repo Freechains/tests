@@ -101,8 +101,8 @@ class Tests_Bootstrap {
     fun t01 () {
         thread { main_host(arrayOf("start", path(3), port(3))) }
         Thread.sleep(500)
-        val boot = Bootstrap(path(3), PORT_8330+3)
-        boot.boot(pair(2), "\$bootstrap.xxx", KEY!!)
+        thread { main_bootstrap(arrayOf(port(3), "init", pair(2), "\$bootstrap.xxx", KEY!!)) }
+
         Thread.sleep(1000)
         main_cli_assert(arrayOf(myself(3), "chain", "#chat", "heads", "all")).let {
             val pay = main_cli_assert(arrayOf(myself(3), "chain", "#chat", "get", "payload", it))

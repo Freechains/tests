@@ -196,6 +196,9 @@ class Tests {
             main_host(arrayOf("start", "/tmp/freechains/tests/M0/"))
         }
         Thread.sleep(200)
+        main_host(arrayOf("path")).let {
+            assert_(it.first && it.second == "//tmp/freechains/tests/M0//")
+        }
         main_cli_assert(arrayOf("chains", "list")).let {
             assert_(it == "")
         }
