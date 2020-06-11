@@ -77,7 +77,7 @@ class Tests_Bootstrap {
         main_cli_assert(arrayOf("peer", pair(2), "send", "\$bootstrap.xxx", myself(0)))
 
         var ok = false
-        val boot = Chain(path(0),"\$bootstrap.xxx", pair(2))
+        val boot = Chain(path(0),"\$bootstrap.xxx", PORT_8330+2)
         boot.cbs.add {
             ok = it.peers.contains(pair(1)) && it.chains.contains(Pair("#chat",null))
         }
@@ -101,7 +101,7 @@ class Tests_Bootstrap {
     fun t01 () {
         thread { main_host(arrayOf("start", path(3), port(3))) }
         Thread.sleep(500)
-        val boot = Bootstrap(path(3), pair(3))
+        val boot = Bootstrap(path(3), PORT_8330+3)
         boot.boot(pair(2), "\$bootstrap.xxx", KEY!!)
         Thread.sleep(1000)
         main_cli_assert(arrayOf(myself(3), "chain", "#chat", "heads", "all")).let {
