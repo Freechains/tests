@@ -33,7 +33,7 @@ diff $FC/1/chains/\#chat/blocks/ $FC/2/chains/\#chat/blocks/ || exit 1
 echo === 2
 
 kill $BOOT
-freechains-bootstrap --port=8402 &
+freechains-bootstrap --port=8402 start &
 sleep 1
 
 freechains --port=8400 chain "\$bootstrap.xxx" post file 2.bootstrap
