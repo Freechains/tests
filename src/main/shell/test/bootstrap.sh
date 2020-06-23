@@ -24,7 +24,7 @@ freechains --port=8401 chains join "\$family" $KEY
 freechains --port=8401 chain "#chat"    post inline "[#chat] Hello World!"
 freechains --port=8401 chain "\$family" post inline "[\$family] Hello World!"
 
-freechains-bootstrap --port=8402 init "localhost:8400" "\$bootstrap.xxx" $KEY &
+freechains-bootstrap --port=8402 remote "localhost:8400" "\$bootstrap.xxx" $KEY &
 BOOT=$!
 sleep 1
 diff $FC/1/chains/\#chat/blocks/ $FC/2/chains/\#chat/blocks/ || exit 1
@@ -33,7 +33,7 @@ diff $FC/1/chains/\#chat/blocks/ $FC/2/chains/\#chat/blocks/ || exit 1
 echo === 2
 
 kill $BOOT
-freechains-bootstrap --port=8402 start &
+freechains-bootstrap --port=8402 local "\$bootstrap.xxx" &
 sleep 1
 
 freechains --port=8400 chain "\$bootstrap.xxx" post file 2.bootstrap
@@ -46,7 +46,7 @@ echo === 3
 
 freechains-host start $FC/3 --port=8403 &
 sleep 1
-freechains-bootstrap --port=8403 init "localhost:8402" "\$bootstrap.xxx" $KEY &
+freechains-bootstrap --port=8403 remote "localhost:8402" "\$bootstrap.xxx" $KEY &
 sleep 1
 
 freechains --port=8402 chains join "#new"

@@ -66,6 +66,15 @@ class Tests {
         main_host(arrayOf("stop", P2))
     }
 
+    /*
+    @Test
+    fun test () {
+        thread { main_host(arrayOf("start", "/data/freechains/data/")) }
+        Thread.sleep(100)
+        main_cli_assert(arrayOf("chain", "\$bootstrap.A2885F4570903EF5EBA941F3497B08EB9FA9A03B4284D9B27FF3E332BA7B6431", "get", "7_E5DF707ADBB9C4CB86B902C9CD2F5E85E062BFB8C3DC895FDAE9C2E796271DDE", "--decrypt=699299132C4C9AC3E7E78C5C62730AFDD68574D0DFA444D372FFBB51DF1BF1E0"))
+    }
+     */
+
     @Test
     fun a1_json() {
         @Serializable
