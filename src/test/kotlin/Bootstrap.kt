@@ -72,29 +72,17 @@ class Tests_Bootstrap {
         main_cli_assert(arrayOf("chain", "\$family", "post", "inline", "[\$family] Hello World!", myself(1)))
 
         // post to 8330 -- send to --> 8332
-        /*
-        val data = Store (
-            mutableListOf(pair(1)),
-            mutableListOf(Pair("#chat",null))
-        )
-        @OptIn(UnstableDefault::class)
-        val json= Json(JsonConfiguration(prettyPrint=true)).stringify(Store.serializer(), data)
-        main_cli_assert(arrayOf("chain", "\$bootstrap.xxx", "post", "inline", json, myself(0)))
-        println(json)
-         */
         main_cli_assert(arrayOf(myself(0), "chain", "\$bootstrap.xxx", "post", "inline", "peers add ${pair(1)}"))
         main_cli_assert(arrayOf(myself(0), "chain", "\$bootstrap.xxx", "post", "inline", "chains add #chat"))
         main_cli_assert(arrayOf("peer", pair(2), "send", "\$bootstrap.xxx", myself(0)))
 
-        var ok = false
         val boot = Chain("\$bootstrap.xxx", PORT_8330+2)
-        boot.cbs.add {
-            println(">>> $it")
-            ok = it.peers.contains(pair(1)) && it.chains.contains(Pair("#chat",null))
-        }
-
         Thread.sleep(500)
-        assert(ok)
+        assert (
+            boot.peers.contains(pair(1)) &&
+            main_cli_assert(arrayOf(port(2), "chains", "list")).listSplit().contains("#chat")
+        )
+
         main_cli_assert(arrayOf("chain", "#chat", "heads", "all", myself(2))).let {
             val pay = main_cli_assert(arrayOf("chain", "#chat", "get", "payload", it, myself(2)))
             assert_(pay == "[#chat] Hello World!")
