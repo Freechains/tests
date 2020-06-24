@@ -71,13 +71,22 @@ echo ==========================================================
 echo === 4
 echo ==========================================================
 
-freechains --port=8402 chain "\$bootstrap.xxx" post inline "peers rem localhost:8403"
+freechains --port=8402 chain "\$bootstrap.xxx" post inline "chains rem #new"
 sleep 5
+freechains --port=8402 chains join "#new"
 freechains --port=8402 chain "#new" post inline "#new again from 8402"
 
 sleep 10
-! grep -r "#new again from 8402" $FC/3   || exit 1
+! grep -r "#new again from 8402" $FC/3 || exit 1
 grep -r "#new again from 8402" $FC/2   || exit 1
+
+freechains --port=8402 chain "\$bootstrap.xxx" post inline "peers rem localhost:8403"
+sleep 5
+freechains --port=8402 chain "#chat" post inline "#chat from 8402"
+
+sleep 10
+! grep -r "#chat from 8402" $FC/3 || exit 1
+grep -r "#chat from 8402" $FC/2   || exit 1
 
 echo ==========================================================
 echo ==========================================================
