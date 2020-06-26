@@ -102,7 +102,8 @@ class Tests_Bootstrap {
         Thread.sleep(500)
         thread {
             main_cli_assert(arrayOf(port(3), "chains", "join", "\$bootstrap.xxx", KEY!!))
-            main_bootstrap(arrayOf(port(3), "remote", pair(2), "\$bootstrap.xxx"))
+            main_cli_assert(arrayOf(port(3), "peer", pair(2), "recv", "\$bootstrap.xxx"))
+            main_bootstrap(arrayOf(port(3), "\$bootstrap.xxx"))
         }
 
         Thread.sleep(1000)
