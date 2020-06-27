@@ -72,14 +72,14 @@ class Tests_Bootstrap {
         main_cli_assert(arrayOf("chain", "\$family", "post", "inline", "[\$family] Hello World!", myself(1)))
 
         // post to 8330 -- send to --> 8332
-        main_cli_assert(arrayOf(myself(0), "chain", "\$bootstrap.xxx", "post", "inline", "peers add ${pair(1)}"))
-        main_cli_assert(arrayOf(myself(0), "chain", "\$bootstrap.xxx", "post", "inline", "chains add #chat"))
+        main_cli_assert(arrayOf(myself(0), "chain", "\$bootstrap.xxx", "post", "inline", "peers ${pair(1)} ADD"))
+        main_cli_assert(arrayOf(myself(0), "chain", "\$bootstrap.xxx", "post", "inline", "chains #chat ADD"))
         main_cli_assert(arrayOf("peer", pair(2), "send", "\$bootstrap.xxx", myself(0)))
 
         val boot = Chain("\$bootstrap.xxx", PORT_8330+2)
         Thread.sleep(500)
         assert (
-            boot.peers.contains(pair(1)) &&
+            boot.data["peers"]!!.contains(pair(1)) &&
             main_cli_assert(arrayOf(port(2), "chains", "list")).listSplit().contains("#chat")
         )
 
@@ -88,7 +88,7 @@ class Tests_Bootstrap {
             assert_(pay == "[#chat] Hello World!")
         }
 
-        main_cli_assert(arrayOf(port(2), "chain", "\$bootstrap.xxx", "post", "inline", "chains add \$family $KEY"))
+        main_cli_assert(arrayOf(port(2), "chain", "\$bootstrap.xxx", "post", "inline", "chains \$family $KEY"))
         Thread.sleep(500)
         main_cli_assert(arrayOf("chain", "\$family", "heads", "all", myself(2))).let {
             val pay = main_cli_assert(arrayOf("chain", "\$family", "get", "payload", it, myself(2)))
