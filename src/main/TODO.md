@@ -3,7 +3,10 @@
     736 ->   809 ->   930 ->  1180 ->  1131 ->  1365 ->  1434 ->  1598 -> 1681 -> 1500 -> 1513 -> 1555 -> 1787 LOC
   10553 -> 10555 -> 10557 -> 10568 -> 10575 -> 10590 -> 10607 ->  5691 -> .... -> 5702 ->                 5808 KB
 ```
-- ping return version
+
+- 1s timeout? problems w/ locks? how to remove the lock in the first place?
+- sort sync by ping timeout
+- ping: return version
 - peer chains return one by line with parameters
 - return codes from org.freechains.host.cli
 - permission for client
