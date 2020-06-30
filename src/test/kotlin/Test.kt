@@ -77,6 +77,26 @@ class Tests {
         Thread.sleep(100)
         main_cli_assert(arrayOf("chain", "\$bootstrap.A2885F4570903EF5EBA941F3497B08EB9FA9A03B4284D9B27FF3E332BA7B6431", "get", "7_E5DF707ADBB9C4CB86B902C9CD2F5E85E062BFB8C3DC895FDAE9C2E796271DDE", "--decrypt=699299132C4C9AC3E7E78C5C62730AFDD68574D0DFA444D372FFBB51DF1BF1E0"))
     }
+
+    @Test
+    fun a0 () {
+        // proof that data-class synchronized is "by ref" not "by value"
+        // we need "by value" because same chain might be loaded by different threads/sockets
+        data class XXX (val a: Int, val b: Int)
+        val v1 = XXX(10,20)
+        val v2 = XXX(10,20)
+        val t1 = thread {
+            synchronized(v1) {
+                Thread.sleep(10000)
+            }
+        }
+        Thread.sleep(100)
+        println("antes")
+        synchronized(v2) {
+            println("dentro")
+        }
+        println("depois")
+    }
      */
 
     @Test
@@ -483,8 +503,8 @@ class Tests {
         thread { main_host(arrayOf("start", "/tmp/freechains/tests/M60x/")) }
         thread { main_host(arrayOf("start", "/tmp/freechains/tests/M61x/", P1)) }
         Thread.sleep(200)
-        main_cli(arrayOf("chains", "join", "@!$PUB0"))
-        main_cli(arrayOf(H1, "chains", "join", "@!$PUB0"))
+        main_cli_assert(arrayOf("chains", "join", "@!$PUB0"))
+        main_cli_assert(arrayOf(H1, "chains", "join", "@!$PUB0"))
         val hash = main_cli_assert(arrayOf("chain", "@!$PUB0", "post", "inline", "aaa", S0, "--encrypt"))
 
         val pay = main_cli_assert(arrayOf("chain", "@!$PUB0", "get", "payload", hash, "--decrypt=$PVT0"))
