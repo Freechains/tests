@@ -4,6 +4,7 @@
   10553 -> 10555 -> 10557 -> 10568 -> 10575 -> 10590 -> 10607 ->  5691 -> .... -> 5702 ->                 5808 KB
 ```
 
+- voltar com IP?
 - 1s timeout? problems w/ locks? how to remove the lock in the first place?
 - sort sync by ping timeout
 - ping: return version

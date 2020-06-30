@@ -1,6 +1,3 @@
-import org.freechains.common.*
-import org.freechains.host.*
-import org.freechains.cli.*
 import com.goterl.lazycode.lazysodium.LazySodium
 import com.goterl.lazycode.lazysodium.LazySodiumJava
 import com.goterl.lazycode.lazysodium.SodiumJava
@@ -12,6 +9,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
+import org.freechains.cli.main_cli
+import org.freechains.cli.main_cli_assert
+import org.freechains.common.*
+import org.freechains.host.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.MethodOrderer.Alphanumeric
@@ -20,10 +21,13 @@ import org.junit.jupiter.api.TestMethodOrder
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.File
+import java.net.InetAddress
+import java.net.NetworkInterface
 import java.net.Socket
 import java.time.Instant
 import java.util.*
 import kotlin.concurrent.thread
+
 
 val H   = Immut(0, Payload(false, ""), null, null, emptyArray())
 val HC  = H.copy(pay=H.pay.copy(true))
