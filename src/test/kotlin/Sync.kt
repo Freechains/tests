@@ -95,37 +95,28 @@ class Tests_Sync {
 
     @Test
     fun s01 () {
-        println(111111111)
         thread { main_host(arrayOf("start", path(11), port(11))) }
-        Thread.sleep(500)
+        Thread.sleep(200)
 
         main_cli_assert(arrayOf(myself(10), "chains", "join", "@$PUB0"))
         main_cli_assert(arrayOf(myself(11), "chains", "join", "@$PUB0"))
 
-        println(2222222222)
         thread { main_sync(arrayOf(port(10), "@$PUB0")) }
         main_cli_assert(arrayOf(myself(10), SIG0, "chain", "@$PUB0", "post", "inline", "chains \"@$PUB0\" ADD"))
-        Thread.sleep(500)
+        Thread.sleep(200)
 
         main_cli_assert(arrayOf(myself(10), "peer", pair(11), "send", "@$PUB0"))
-        Thread.sleep(500)
+        Thread.sleep(200)
         thread { main_sync(arrayOf(port(11), "@$PUB0")) }
 
-        println(3333333333)
         main_cli_assert(arrayOf(myself(10), SIG0, "chain", "@$PUB0", "post", "inline", "peers ${pair(11)} ADD"))
         main_cli_assert(arrayOf(myself(10), SIG0, "chain", "@$PUB0", "post", "inline", "chains #chat ADD"))
 
-        Thread.sleep(500) // #chat ADD has to propagate to @11
+        Thread.sleep(200) // #chat ADD has to propagate to @11
 
-        println("==== POST")
         main_cli_assert(arrayOf(myself(10), "chain", "#chat", "post", "inline", "[#chat] Hello World!"))
 
-        // TODO 15s (!!!)
-        for (i in 1..15) {
-            Thread.sleep(1000)
-            println("... 1s")
-        }
-        //Thread.sleep(10000) // "Hello World! has to propagate to @11
+        Thread.sleep(200) // "Hello World! has to propagate to @11
 
         main_cli_assert(arrayOf(myself(11), "chain", "#chat", "heads", "all")).let {
             //println(it)
@@ -158,7 +149,7 @@ class Tests_Sync {
 
         val store = Store("\$bootstrap.xxx", PORT_8330+2)
         Sync(store, CBS)
-        Thread.sleep(500)
+        Thread.sleep(200)
         assert (
                 store.data["peers"]!!.contains(pair(1)) &&
                         main_cli_assert(arrayOf(port(2), "chains", "list")).listSplit().contains("#chat")
@@ -170,7 +161,7 @@ class Tests_Sync {
         }
 
         main_cli_assert(arrayOf(port(2), "chain", "\$bootstrap.xxx", "post", "inline", "chains \$family $KEY"))
-        Thread.sleep(500)
+        Thread.sleep(200)
         main_cli_assert(arrayOf("chain", "\$family", "heads", "all", myself(2))).let {
             val pay = main_cli_assert(arrayOf("chain", "\$family", "get", "payload", it, myself(2)))
             assert_(pay == "[\$family] Hello World!")
@@ -180,7 +171,7 @@ class Tests_Sync {
     @Test
     fun t01 () {
         thread { main_host(arrayOf("start", path(3), port(3))) }
-        Thread.sleep(500)
+        Thread.sleep(200)
         thread {
             val KEY = main_cli_assert(arrayOf("crypto", "shared", "my-password", myself(2)))
             main_cli_assert(arrayOf(port(3), "chains", "join", "\$bootstrap.xxx", KEY))
@@ -188,7 +179,7 @@ class Tests_Sync {
             main_sync(arrayOf(port(3), "\$bootstrap.xxx"))
         }
 
-        Thread.sleep(1000)
+        Thread.sleep(200)
         main_cli_assert(arrayOf(myself(3), "chain", "#chat", "heads", "all")).let {
             val pay = main_cli_assert(arrayOf(myself(3), "chain", "#chat", "get", "payload", it))
             assert_(pay == "[#chat] Hello World!")

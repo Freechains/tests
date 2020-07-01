@@ -11,7 +11,7 @@ FC=/tmp/freechains/sync/
 freechains-host start $FC/0 --port=8400 &
 freechains-host start $FC/1 --port=8401 &
 freechains-host start $FC/2 --port=8402 &
-sleep 1
+sleep 0.5
 
 echo ==========================================================
 echo === 1
@@ -32,7 +32,7 @@ freechains --port=8402 chains join "\$bootstrap.xxx" $KEY
 freechains --port=8402 peer "localhost:8400" recv "\$bootstrap.xxx"
 freechains-sync --port=8402 "\$bootstrap.xxx" &
 BOOT=$!
-sleep 1
+sleep 0.5
 diff $FC/1/chains/\#chat/blocks/ $FC/2/chains/\#chat/blocks/ || exit 1
 
 echo ==========================================================
@@ -41,11 +41,11 @@ echo ==========================================================
 
 kill $BOOT
 freechains-sync --port=8402 "\$bootstrap.xxx" &
-sleep 1
+sleep 0.5
 
 freechains --port=8400 chain "\$bootstrap.xxx" post inline "chains \$family 03F09D95821EABE32055921AFAF6D8584759A86C5E3B3126DD138372C148F47D"
 freechains --port=8400 peer localhost:8402 send "\$bootstrap.xxx"
-sleep 1
+sleep 0.5
 diff $FC/1/chains/\$family/blocks/ $FC/2/chains/\$family/blocks/ || exit 1
 
 echo ==========================================================
@@ -53,17 +53,17 @@ echo === 3
 echo ==========================================================
 
 freechains-host start $FC/3 --port=8403 &
-sleep 1
+sleep 0.5
 freechains --port=8403 chains join "\$bootstrap.xxx" $KEY
 freechains --port=8403 peer "localhost:8402" recv "\$bootstrap.xxx"
 freechains-sync --port=8403 "\$bootstrap.xxx" &
-sleep 1
+sleep 0.5
 
 freechains --port=8402 chain "\$bootstrap.xxx" post inline "peers localhost:8403 ADD"
 freechains --port=8402 chain "\$bootstrap.xxx" post inline "chains #new ADD"
-sleep 1
+sleep 0.5
 freechains --port=8402 chain "#new" post inline "#new from 8402"
-sleep 60
+sleep 45
 
 echo "11111"
 
@@ -78,19 +78,19 @@ echo === 4
 echo ==========================================================
 
 freechains --port=8402 chain "\$bootstrap.xxx" post inline "chains #new REM"
-sleep 5
+sleep 1
 freechains --port=8402 chains join "#new"
 freechains --port=8402 chain "#new" post inline "#new again from 8402"
 
-sleep 10
+sleep 5
 ! grep -r "#new again from 8402" $FC/3 || exit 1
 grep -r "#new again from 8402" $FC/2   || exit 1
 
 freechains --port=8402 chain "\$bootstrap.xxx" post inline "peers localhost:8403 REM"
-sleep 5
+sleep 1
 freechains --port=8402 chain "#chat" post inline "#chat from 8402"
 
-sleep 10
+sleep 1
 ! grep -r "#chat from 8402" $FC/3 || exit 1
 grep -r "#chat from 8402" $FC/2   || exit 1
 
