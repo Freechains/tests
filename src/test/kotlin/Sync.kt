@@ -179,7 +179,7 @@ class Tests_Sync {
             main_sync(arrayOf(port(3), "\$bootstrap.xxx"))
         }
 
-        Thread.sleep(200)
+        Thread.sleep(500)
         main_cli_assert(arrayOf(myself(3), "chain", "#chat", "heads", "all")).let {
             val pay = main_cli_assert(arrayOf(myself(3), "chain", "#chat", "get", "payload", it))
             assert_(pay == "[#chat] Hello World!")

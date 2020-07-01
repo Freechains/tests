@@ -63,15 +63,10 @@ freechains --port=8402 chain "\$bootstrap.xxx" post inline "peers localhost:8403
 freechains --port=8402 chain "\$bootstrap.xxx" post inline "chains #new ADD"
 sleep 0.5
 freechains --port=8402 chain "#new" post inline "#new from 8402"
-sleep 45
-
-echo "11111"
+sleep 1
 
 diff $FC/2/chains/ $FC/3/chains/ || exit 1
 grep -r "#new from 8402" $FC/3   || exit 1
-
-echo "22222"
-exit 0
 
 echo ==========================================================
 echo === 4
