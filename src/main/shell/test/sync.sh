@@ -17,34 +17,35 @@ echo ==========================================================
 echo === 1
 echo ==========================================================
 
-freechains --port=8400 chains join "\$bootstrap.xxx" $KEY
+freechains --port=8400 chains join "\$sync.xxx" $KEY
 
-freechains --port=8400 chain "\$bootstrap.xxx" post inline "peers localhost:8400 ADD"
-freechains --port=8400 chain "\$bootstrap.xxx" post inline "peers localhost:8401 ADD"
-freechains --port=8400 chain "\$bootstrap.xxx" post inline "chains #chat ADD"
+freechains --port=8400 chain "\$sync.xxx" post inline "peers localhost:8400 ADD"
+freechains --port=8400 chain "\$sync.xxx" post inline "peers localhost:8401 ADD"
+freechains --port=8400 chain "\$sync.xxx" post inline "chains #chat ADD"
 
 freechains --port=8401 chains join "#chat"
 freechains --port=8401 chains join "\$family" $KEY
 freechains --port=8401 chain "#chat"    post inline "[#chat] Hello World!"
 freechains --port=8401 chain "\$family" post inline "[\$family] Hello World!"
 
-freechains --port=8402 chains join "\$bootstrap.xxx" $KEY
-freechains --port=8402 peer "localhost:8400" recv "\$bootstrap.xxx"
-freechains-sync --port=8402 "\$bootstrap.xxx" &
-BOOT=$!
+freechains --port=8402 chains join "\$sync.xxx" $KEY
+freechains-sync --port=8402 "\$sync.xxx" &
+SYNC=$!
 sleep 0.5
+freechains --port=8402 peer "localhost:8400" recv "\$sync.xxx"
+sleep 1
 diff $FC/1/chains/\#chat/blocks/ $FC/2/chains/\#chat/blocks/ || exit 1
 
 echo ==========================================================
 echo === 2
 echo ==========================================================
 
-kill $BOOT
-freechains-sync --port=8402 "\$bootstrap.xxx" &
+kill $SYNC
+freechains-sync --port=8402 "\$sync.xxx" &
 sleep 0.5
 
-freechains --port=8400 chain "\$bootstrap.xxx" post inline "chains \$family 03F09D95821EABE32055921AFAF6D8584759A86C5E3B3126DD138372C148F47D"
-freechains --port=8400 peer localhost:8402 send "\$bootstrap.xxx"
+freechains --port=8400 chain "\$sync.xxx" post inline "chains \$family 03F09D95821EABE32055921AFAF6D8584759A86C5E3B3126DD138372C148F47D"
+freechains --port=8400 peer localhost:8402 send "\$sync.xxx"
 sleep 0.5
 diff $FC/1/chains/\$family/blocks/ $FC/2/chains/\$family/blocks/ || exit 1
 
@@ -54,13 +55,13 @@ echo ==========================================================
 
 freechains-host start $FC/3 --port=8403 &
 sleep 0.5
-freechains --port=8403 chains join "\$bootstrap.xxx" $KEY
-freechains --port=8403 peer "localhost:8402" recv "\$bootstrap.xxx"
-freechains-sync --port=8403 "\$bootstrap.xxx" &
+freechains --port=8403 chains join "\$sync.xxx" $KEY
+#freechains --port=8403 peer "localhost:8402" recv "\$sync.xxx"
+freechains-sync --port=8403 "\$sync.xxx" &
 sleep 0.5
 
-freechains --port=8402 chain "\$bootstrap.xxx" post inline "peers localhost:8403 ADD"
-freechains --port=8402 chain "\$bootstrap.xxx" post inline "chains #new ADD"
+freechains --port=8402 chain "\$sync.xxx" post inline "peers localhost:8403 ADD"
+freechains --port=8402 chain "\$sync.xxx" post inline "chains #new ADD"
 sleep 0.5
 freechains --port=8402 chain "#new" post inline "#new from 8402"
 sleep 1
@@ -72,7 +73,7 @@ echo ==========================================================
 echo === 4
 echo ==========================================================
 
-freechains --port=8402 chain "\$bootstrap.xxx" post inline "chains #new REM"
+freechains --port=8402 chain "\$sync.xxx" post inline "chains #new REM"
 sleep 1
 freechains --port=8402 chains join "#new"
 freechains --port=8402 chain "#new" post inline "#new again from 8402"
@@ -81,7 +82,7 @@ sleep 5
 ! grep -r "#new again from 8402" $FC/3 || exit 1
 grep -r "#new again from 8402" $FC/2   || exit 1
 
-freechains --port=8402 chain "\$bootstrap.xxx" post inline "peers localhost:8403 REM"
+freechains --port=8402 chain "\$sync.xxx" post inline "peers localhost:8403 REM"
 sleep 1
 freechains --port=8402 chain "#chat" post inline "#chat from 8402"
 
