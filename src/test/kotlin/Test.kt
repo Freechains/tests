@@ -28,7 +28,6 @@ import java.time.Instant
 import java.util.*
 import kotlin.concurrent.thread
 
-
 val H   = Immut(0, Payload(false, ""), null, null, emptyArray())
 val HC  = H.copy(pay=H.pay.copy(true))
 
