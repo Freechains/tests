@@ -112,7 +112,7 @@ class Tests_Sync {
         main_cli_assert(arrayOf(myself(10), SIG0, "chain", "@$PUB0", "post", "inline", "peers ${pair(11)} ADD"))
         main_cli_assert(arrayOf(myself(10), SIG0, "chain", "@$PUB0", "post", "inline", "chains #chat ADD"))
 
-        Thread.sleep(200) // #chat ADD has to propagate to @11
+        Thread.sleep(500) // #chat ADD has to propagate to @11
 
         main_cli_assert(arrayOf(myself(10), "chain", "#chat", "post", "inline", "[#chat] Hello World!"))
 
