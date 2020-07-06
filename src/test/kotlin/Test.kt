@@ -355,6 +355,7 @@ class Tests {
         t2.join()
         assert_(ok == 2)
     }
+
     @Test
     fun m02_crypto() {
         thread {
@@ -377,6 +378,24 @@ class Tests {
         //println("nonce=${lazySodium.toHexStr(nonce)} // msg=$encrypted")
         val decrypted = lazySodium.cryptoSecretBoxOpenEasy(encrypted, nonce, key)
         assert_(msg == decrypted)
+    }
+
+    @Test
+    fun m02_crypto_passphrase() {
+        thread {
+            main_host(arrayOf("start", "/tmp/freechains/tests/M2/"))
+        }
+        Thread.sleep(200)
+
+        val s0 = main_cli_assert(arrayOf("crypto", "shared", "senha"))
+        val s1 = main_cli_assert(arrayOf("crypto", "shared", "senha secreta"))
+        val s2 = main_cli_assert(arrayOf("crypto", "shared", "senha super secreta"))
+        assert_(s0 != s1 && s1 != s2)
+
+        val k0 = main_cli_assert(arrayOf("crypto", "pubpvt", "senha"))
+        val k1 = main_cli_assert(arrayOf("crypto", "pubpvt", "senha secreta"))
+        val k2 = main_cli_assert(arrayOf("crypto", "pubpvt", "senha super secreta"))
+        assert_(k0 != k1 && k1 != k2)
     }
 
     @Test
