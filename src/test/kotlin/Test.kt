@@ -1395,4 +1395,23 @@ class Tests {
             }
         }
     }
+
+    @Test
+    fun m19_sends () {
+        val PVT = "6F99999751DE615705B9B1A987D8422D75D16F5D55AF43520765FA8C5329F7053CCAF4839B1FDDF406552AF175613D7A247C5703683AEC6DBDF0BB3932DD8322"
+        val PUB = "3CCAF4839B1FDDF406552AF175613D7A247C5703683AEC6DBDF0BB3932DD8322"
+        thread { main_host(arrayOf("start", "/tmp/freechains/tests/M19-0/"))     }
+        thread { main_host(arrayOf("start", "/tmp/freechains/tests/M19-1/", P1)) }
+        Thread.sleep(500)
+        main_cli(arrayOf(H0, "chains", "join", "@!$PUB"))
+        main_cli(arrayOf(H1, "chains", "join", "@!$PUB"))
+
+        val n = 500
+        for (i in 1..n) {
+            main_cli_assert(arrayOf(H0, "--sign=$PVT", "chain", "@!$PUB", "post", "inline", "$i"))
+        }
+
+        val ret = main_cli_assert(arrayOf(H0, "peer", "localhost:$PORT1", "send", "@!$PUB"))
+        assert_(ret == "$n / $n")
+    }
 }
