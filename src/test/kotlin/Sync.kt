@@ -94,7 +94,7 @@ class Tests_Sync {
     }
 
     @Test
-    fun s01 () {
+    fun s01 () { // TODO: this test sometimes fail, why?
         thread { main_host(arrayOf("start", path(11), port(11))) }
         Thread.sleep(200)
 
@@ -105,9 +105,9 @@ class Tests_Sync {
         main_cli_assert(arrayOf(myself(10), SIG0, "chain", "@$PUB0", "post", "inline", "chains \"@$PUB0\" ADD"))
         Thread.sleep(200)
 
-        thread { main_sync(arrayOf(port(11), "@$PUB0")) }
-        Thread.sleep(200)
-        main_cli_assert(arrayOf(myself(10), "peer", pair(11), "send", "@$PUB0"))
+        thread { main_sync(arrayOf(port(11), "@$PUB0", pair(10))) }
+
+        Thread.sleep(500)
 
         main_cli_assert(arrayOf(myself(10), SIG0, "chain", "@$PUB0", "post", "inline", "peers ${pair(11)} ADD"))
         main_cli_assert(arrayOf(myself(10), SIG0, "chain", "@$PUB0", "post", "inline", "chains #chat ADD"))
@@ -147,12 +147,12 @@ class Tests_Sync {
         main_cli_assert(arrayOf(myself(0), "chain", "\$sync.xxx", "post", "inline", "chains #chat ADD"))
 
         val store = Store("\$sync.xxx", PORT_8330+2)
-        Sync(store, CBS)
-        main_cli_assert(arrayOf("peer", pair(2), "send", "\$sync.xxx", myself(0)))
+        val sync = Sync(store, pair(0), CBS)
+        thread { sync.loop() }
         Thread.sleep(500)
         assert (
-                store.data["peers"]!!.contains(pair(1)) &&
-                        main_cli_assert(arrayOf(port(2), "chains", "list")).listSplit().contains("#chat")
+            store.data["peers"]!!.contains(pair(1)) &&
+            main_cli_assert(arrayOf(port(2), "chains", "list")).listSplit().contains("#chat")
         )
 
         main_cli_assert(arrayOf("chain", "#chat", "heads", "all", myself(2))).let {
@@ -174,9 +174,7 @@ class Tests_Sync {
         Thread.sleep(200)
         val KEY = main_cli_assert(arrayOf("crypto", "shared", "my-password", myself(2)))
         main_cli_assert(arrayOf(port(3), "chains", "join", "\$sync.xxx", KEY))
-        thread { main_sync(arrayOf(port(3), "\$sync.xxx")) }
-        Thread.sleep(200)
-        main_cli_assert(arrayOf(port(3), "peer", pair(2), "recv", "\$sync.xxx"))
+        thread { main_sync(arrayOf(port(3), "\$sync.xxx", pair(2))) }
         Thread.sleep(200)
         main_cli_assert(arrayOf(myself(3), "chain", "#chat", "heads", "all")).let {
             val pay = main_cli_assert(arrayOf(myself(3), "chain", "#chat", "get", "payload", it))

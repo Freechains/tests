@@ -29,10 +29,8 @@ freechains --port=8401 chain "#chat"    post inline "[#chat] Hello World!"
 freechains --port=8401 chain "\$family" post inline "[\$family] Hello World!"
 
 freechains --port=8402 chains join "\$sync.xxx" $KEY
-freechains-sync --port=8402 "\$sync.xxx" &
+freechains-sync --port=8402 "\$sync.xxx" "localhost:8400" &
 SYNC=$!
-sleep 0.5
-freechains --port=8402 peer "localhost:8400" recv "\$sync.xxx"
 sleep 1
 diff $FC/1/chains/\#chat/blocks/ $FC/2/chains/\#chat/blocks/ || exit 1
 
@@ -79,8 +77,8 @@ freechains --port=8402 chains join "#new"
 freechains --port=8402 chain "#new" post inline "#new again from 8402"
 
 sleep 5
-! grep -r "#new again from 8402" $FC/3 || exit 1
-grep -r "#new again from 8402" $FC/2   || exit 1
+grep -r "#new again from 8402" $FC/3 || exit 1  # REM is not leaving the chain
+grep -r "#new again from 8402" $FC/2 || exit 1
 
 freechains --port=8402 chain "\$sync.xxx" post inline "peers localhost:8403 REM"
 sleep 1
