@@ -34,8 +34,8 @@ const val N = 21
 val VS = mutableListOf<List<Int>>()
 val TODO = mutableListOf<MutableList<Int>>()
 
-const val WAIT  = 1*min
-const val TOTAL = 5*min //12*hour   // simulation time
+const val WAIT  = 30*sec
+const val TOTAL = 10*min //12*hour   // simulation time
 val LATENCY = Pair(50*ms.toInt(), 50*ms.toInt())   // network latency (start time)
 
 class Simulation {
@@ -151,7 +151,6 @@ class Simulation {
     fun _sim_chat () {
         val CHAIN = "\$chat"
         val PERIOD = Pair(20*sec.toInt(), 15*sec.toInt())   // period between two messages
-
         val LEN_50 = Pair(50,10)      // message length
         val LEN_05 = Pair(5,2)        // message length
 
@@ -185,8 +184,8 @@ class Simulation {
         println("        m50=$LEN_50, m05=$LEN_05, latency=$LATENCY")
     }
 
-    fun _sim_insta () {
-        val CHAIN = "\$insta"
+    fun _sim_inst () {
+        val CHAIN = "\$inst"
 
         join(CHAIN)
         listen(CHAIN, { i ->  handle(i,CHAIN)})
@@ -271,11 +270,11 @@ class Simulation {
     }
 
     @Test
-    fun sim_insta () {
+    fun sim_inst () {
         stop_delete()
         create_start()
         Thread.sleep(2*sec)
-        _sim_insta()
+        _sim_inst()
     }
 
     @Test
@@ -286,7 +285,7 @@ class Simulation {
 
         val t1 = thread { _sim_chat()  }
         Thread.sleep(WAIT)
-        val t2 = thread { _sim_insta() }
+        val t2 = thread { _sim_inst() }
         t1.join()
         t2.join()
     }
