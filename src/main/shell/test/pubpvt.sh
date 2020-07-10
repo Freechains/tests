@@ -40,8 +40,8 @@ freechains --host=localhost:8400 peer localhost:8401 send "@$PUB"  # FAIL
 freechains --host=localhost:8402 peer localhost:8400 recv "@$PUB"  # SUCCESS
 
 # compare them
-! diff -q $FC/8400/chains/@$PUB/blocks/ $FC/8401/chains/@$PUB/blocks/ || exit 1
-diff $FC/8400/chains/@$PUB/blocks/ $FC/8402/chains/@$PUB/blocks/      || exit 1
+! diff -q -I local $FC/8400/chains/@$PUB/blocks/ $FC/8401/chains/@$PUB/blocks/ || exit 1
+diff -I local $FC/8400/chains/@$PUB/blocks/ $FC/8402/chains/@$PUB/blocks/      || exit 1
 
 # post to 8400, send to 8401 (fail) 8402 (succees, but crypted)
 h=`freechains --host=localhost:8400 --sign=$PVT --encrypt chain "@$PUB" post inline Hello_World`
