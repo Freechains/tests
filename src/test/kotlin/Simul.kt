@@ -34,8 +34,8 @@ const val N = 21
 val VS = mutableListOf<List<Int>>()
 val TODO = mutableListOf<MutableList<Int>>()
 
-const val WAIT  = 30*sec
-const val TOTAL = 10*min //12*hour   // simulation time
+const val WAIT  = 1*min
+const val TOTAL = 10*min //1*hour  // simulation time
 val LATENCY = Pair(50*ms.toInt(), 50*ms.toInt())   // network latency (start time)
 
 class Simulation {
@@ -135,6 +135,7 @@ class Simulation {
                     try {
                         main_cli_assert(arrayOf(h.toHost(), "peer", "localhost:${8400 + p}", "send", chain))
                     } catch (e: Throwable) {
+                        //System.err.println(e.stackTrace.contentToString())
                         println("-=-=-=- ERROR 2 @$h (${e.message})-=-=-=-")
                         //Thread.sleep(normal(Pair(2000*ms.toInt(),1000*ms.toInt())).toLong())
                         //continue
