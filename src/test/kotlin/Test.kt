@@ -508,8 +508,8 @@ class Tests {
 
         main_cli(arrayOf("peer", "localhost:$PORT1", "send", "@$PUB0"))
         val json2 = main_cli_assert(arrayOf(H1, "chain", "@$PUB0", "get", "block", hash))
-        val blk2 = json2.jsonToBlock()
-        assert_(blk2.immut.pay.crypt)
+        val blk2 = json2.jsonToBlock_()
+        assert_(blk2.pay.crypt)
 
         val h2 = main_cli_assert(arrayOf("chain", "@$PUB0", "post", "inline", "bbbb", S1))
         val pay2 = main_cli_assert(arrayOf("chain", "@$PUB0", "get", "payload", h2))
@@ -530,8 +530,8 @@ class Tests {
 
         main_cli(arrayOf("peer", "localhost:$PORT1", "send", "@!$PUB0"))
         val json2 = main_cli_assert(arrayOf(H1, "chain", "@!$PUB0", "get", "block", hash))
-        val blk2 = json2.jsonToBlock()
-        assert_(blk2.immut.pay.crypt)
+        val blk2 = json2.jsonToBlock_()
+        assert_(blk2.pay.crypt)
 
         main_cli(arrayOf("chain", "@!$PUB0", "post", "inline", "bbbb", S1)).let {
             assert_(!it.first && it.second.equals("! must be from owner"))
