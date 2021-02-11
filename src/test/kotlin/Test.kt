@@ -6,7 +6,7 @@ import com.goterl.lazycode.lazysodium.interfaces.SecretBox
 import com.goterl.lazycode.lazysodium.utils.Key
 import com.goterl.lazycode.lazysodium.utils.KeyPair
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.UnstableDefault
+//import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import org.freechains.cli.main_cli
@@ -111,10 +111,10 @@ class Tests {
         //println(x)
         val s = MeuDado(x)
         //println(s)
-        @OptIn(UnstableDefault::class)
-        val json = Json(JsonConfiguration(prettyPrint = true))
-        val a = json.stringify(MeuDado.serializer(), s)
-        val b = json.parse(MeuDado.serializer(), a)
+        //@OptIn(UnstableDefault::class)
+        val json = Json { prettyPrint = true }
+        val a = json.encodeToString(MeuDado.serializer(), s)
+        val b = json.decodeFromString(MeuDado.serializer(), a)
         val c = b.v.toByteArray(Charsets.ISO_8859_1)
         assert_(bs.toByteArray().contentToString() == c.contentToString())
     }
