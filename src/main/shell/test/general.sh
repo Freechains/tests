@@ -25,10 +25,10 @@ hs=`freechains --host=localhost:8400 chain "@!$PUB" heads linked`
 freechains --host=localhost:8400 chain "@!$PUB" get block "$g" > $FC/freechains-tests-gen.out
 freechains --host=localhost:8400 chain "@!$PUB" get block "$hs" > $FC/freechains-tests-heads.out
 
-diff -I local -I 1_ $FC/freechains-tests-gen.out   out/freechains-tests-get-0.out || exit 1
-diff -I local -I 1_ $FC/freechains-tests-get-0.out out/freechains-tests-get-0.out || exit 1
-diff -I local -I time -I hash $FC/freechains-tests-get-1.out out/freechains-tests-get-1.out || exit 1
-diff -I local -I time -I hash $FC/freechains-tests-heads.out out/freechains-tests-get-1.out || exit 1
+diff -I local -I 1_ $FC/freechains-tests-gen.out   chk/freechains-tests-get-0.out || exit 1
+diff -I local -I 1_ $FC/freechains-tests-get-0.out chk/freechains-tests-get-0.out || exit 1
+diff -I local -I time -I hash $FC/freechains-tests-get-1.out chk/freechains-tests-get-1.out || exit 1
+diff -I local -I time -I hash $FC/freechains-tests-heads.out chk/freechains-tests-get-1.out || exit 1
 
 uuencode /bin/cat cat > /tmp/cat.uu
 h=`freechains --host=localhost:8400 --sign=$PVT chain "@!$PUB" post file /tmp/cat.uu`
